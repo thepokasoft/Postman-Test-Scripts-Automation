@@ -219,8 +219,13 @@ public class JSONFlattener {
             } else {
                 String value = obj.get(key).toString();
 
-                if (value != null && !value.equals("null")) {
-                    flatJson.put(_prefix + key, value);
+                if (value != null) {
+                	String scriptString = "tests."+key+" = jsonData."+_prefix + key+" === \""+value+"\";";
+                if(value =="null" || value =="true" || value =="false" || _prefix.contains("metadata")) {
+                	scriptString = "tests."+key+" = jsonData."+_prefix + key+" === "+value+";";
+                }
+                	
+                    flatJson.put(scriptString,"" );
                 }
             }
         }
@@ -249,12 +254,12 @@ public class JSONFlattener {
                 flatten(jsonArray, flatJson, prefix + "[" + i + "]");
             } else if (obj.get(i).getClass() == JSON_OBJECT) {
                 JSONObject jsonObject = (JSONObject) obj.get(i);
-                flatten(jsonObject, flatJson, prefix + "[" + (i + 1) + "]");
+                flatten(jsonObject, flatJson, prefix + "[" + (i ) + "]");
             } else {
                 String value = obj.get(i).toString();
 
                 if (value != null) {
-                    flatJson.put(prefix + "[" + (i + 1) + "]", value);
+                    flatJson.put(prefix + "[" + (i) + "]", value);
                 }
             }
         }

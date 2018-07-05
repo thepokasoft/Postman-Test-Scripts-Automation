@@ -16,14 +16,10 @@
  */
 package org.jsontocsv;
 
-import java.io.File;
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jsontocsv.parser.JSONFlattener;
-import org.jsontocsv.writer.CSVWriter;
 
 public class Main {
 
@@ -31,50 +27,19 @@ public class Main {
         /*
          *  Parse a JSON String and convert it to CSV
          */
-        List<Map<String, String>> flatJson = JSONFlattener.parseJson(jsonString());
-        // Using the default separator ','
-        CSVWriter.writeToFile(CSVWriter.getCSV(flatJson), "files/sample_string.csv");
+        List<Map<String, String>> flatJson;
+        
+		String jsonString = "{\"lprice\":\"469.81\",\"curr1\":\"ETH\",\"curr2\":\"USD\"}";
 
-        /*
-         *  Parse a JSON File and convert it to CSV
-         */
-        flatJson = JSONFlattener.parseJson(new File("files/simple.json"), "UTF-8");
-        // Using ';' as separator
-        CSVWriter.writeToFile(CSVWriter.getCSV(flatJson, ";"), "files/sample_file.csv");
+        flatJson = JSONFlattener.parseJson(jsonString);
+        //System.out.println(flatJson);
+        String s = flatJson.toString().replaceAll("=,", "");
+        //System.out.println(s);
+        s = s.substring(2, s.length()-3);
+        s = s.replaceAll(";", ";\n");
+        s= "var jsonData = JSON.parse(responseBody);"+s;
+        System.out.println(s);
 
-        /*
-         *  Parse JSON from URL and convert it to CSV
-         */
-        flatJson = JSONFlattener.parseJson(new URI("http://echo.jsontest.com/firstname/Brahim/lastName/Arkni"));
-        // Using '\t' as separator
-        CSVWriter.writeToFile(CSVWriter.getCSV(flatJson, "\t"), "files/sample_uri.csv");
-	
-	/*
-         *  Parse a Large JSON File and convert it to CSV
-         */
-        flatJson = JSONFlattener.parseJson(new File("files/sample_large.json"), "UTF-8");
-        // Using ';' as separator
-        Set<String> header = CSVWriter.collectOrderedHeaders(flatJson);
-        // the intention is generate a csv file with specific headers - not all
-        CSVWriter.writeLargeFile(flatJson, ";", "files/sample_largeFile.csv", header);  
     }
 
-    private static String jsonString() {
-        return  "[" +
-                "    {" +
-                "        \"studentName\": \"Foo\"," +
-                "        \"Age\": \"12\"," +
-                "        \"subjects\": [" +
-                "            {" +
-                "                \"name\": \"English\"," +
-                "                \"marks\": \"40\"" +
-                "            }," +
-                "            {" +
-                "                \"name\": \"History\"," +
-                "                \"marks\": \"50\"" +
-                "            }" +
-                "        ]" +
-                "    }" +
-                "]";
-    }
-}
+   }
